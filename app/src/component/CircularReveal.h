@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __CIRCULARREVEAL_H__
+#define __CIRCULARREVEAL_H__
 
 #include <QQuickItem>
 #include <QQuickPaintedItem>
@@ -6,10 +7,11 @@
 #include <QPropertyAnimation>
 #include "src/stdafx.h"
 
-class CircularReveal : public QQuickPaintedItem {
-Q_OBJECT
-Q_PROPERTY_AUTO_P(QQuickItem*, target)
-Q_PROPERTY_AUTO(int, radius)
+class CircularReveal : public QQuickPaintedItem
+{
+    Q_OBJECT
+    Q_PROPERTY_AUTO_P(QQuickItem *, target)
+    Q_PROPERTY_AUTO(int, radius)
 public:
     explicit CircularReveal(QQuickItem *parent = nullptr);
 
@@ -29,3 +31,5 @@ private:
     QPoint _center;
     QSharedPointer<QQuickItemGrabResult> _grabResult;
 };
+
+#endif // __CIRCULARREVEAL_H__

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __SETTINGSHELPER_H__
+#define __SETTINGSHELPER_H__
 
 #include <QtCore/qobject.h>
 #include <QtQml/qqml.h>
@@ -9,13 +10,14 @@
 #include <QDir>
 #include "src/singleton.h"
 
-class SettingsHelper : public QObject {
-Q_OBJECT
+class SettingsHelper : public QObject
+{
+    Q_OBJECT
 private:
     explicit SettingsHelper(QObject *parent = nullptr);
 
 public:
-SINGLETON(SettingsHelper)
+    SINGLETON(SettingsHelper)
 
     ~SettingsHelper() override;
 
@@ -41,3 +43,5 @@ private:
 private:
     QScopedPointer<QSettings> m_settings;
 };
+
+#endif // __SETTINGSHELPER_H__

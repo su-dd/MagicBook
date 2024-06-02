@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __NETWORK_H__
+#define __NETWORK_H__
 
 #include <QObject>
 #include <QtQml/qqml.h>
@@ -10,9 +11,11 @@
 #include "src/stdafx.h"
 #include "src/singleton.h"
 
-namespace NetworkType {
+namespace NetworkType
+{
     Q_NAMESPACE
-    enum CacheMode {
+    enum CacheMode
+    {
         NoCache = 0x0000,
         RequestFailedReadCache = 0x0001,
         IfNoneCacheRequest = 0x0002,
@@ -27,8 +30,9 @@ namespace NetworkType {
 /**
  * @brief The NetworkCallable class
  */
-class NetworkCallable : public QObject {
-Q_OBJECT
+class NetworkCallable : public QObject
+{
+    Q_OBJECT
     QML_NAMED_ELEMENT(NetworkCallable)
 public:
     explicit NetworkCallable(QObject *parent = nullptr);
@@ -51,8 +55,9 @@ public:
 /**
  * @brief The FluDownloadParam class
  */
-class FluDownloadParam : public QObject {
-Q_OBJECT
+class FluDownloadParam : public QObject
+{
+    Q_OBJECT
 public:
     explicit FluDownloadParam(QObject *parent = nullptr);
 
@@ -66,11 +71,13 @@ public:
 /**
  * @brief The NetworkParams class
  */
-class NetworkParams : public QObject {
-Q_OBJECT
+class NetworkParams : public QObject
+{
+    Q_OBJECT
     QML_NAMED_ELEMENT(NetworkParams)
 public:
-    enum Method {
+    enum Method
+    {
         METHOD_GET,
         METHOD_HEAD,
         METHOD_POST,
@@ -78,7 +85,8 @@ public:
         METHOD_PATCH,
         METHOD_DELETE
     };
-    enum Type {
+    enum Type
+    {
         TYPE_NONE,
         TYPE_FORM,
         TYPE_JSON,
@@ -144,12 +152,13 @@ public:
 /**
  * @brief The Network class
  */
-class Network : public QObject {
-Q_OBJECT
-Q_PROPERTY_AUTO(int, timeout)
-Q_PROPERTY_AUTO(int, retry)
-Q_PROPERTY_AUTO(QString, cacheDir)
-Q_PROPERTY_AUTO(bool, openLog)
+class Network : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY_AUTO(int, timeout)
+    Q_PROPERTY_AUTO(int, retry)
+    Q_PROPERTY_AUTO(QString, cacheDir)
+    Q_PROPERTY_AUTO(bool, openLog)
     QML_NAMED_ELEMENT(Network)
     QML_SINGLETON
 
@@ -157,7 +166,7 @@ private:
     explicit Network(QObject *parent = nullptr);
 
 public:
-SINGLETON(Network)
+    SINGLETON(Network)
 
     static Network *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine) { return getInstance(); }
 
@@ -229,3 +238,5 @@ private:
 public:
     QJSValue _interceptor;
 };
+
+#endif // __NETWORK_H__

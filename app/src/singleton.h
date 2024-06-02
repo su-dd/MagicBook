@@ -1,16 +1,19 @@
-#pragma once
+#ifndef __SINGLETON_H__
+#define __SINGLETON_H__
 
 /**
  * @brief The Singleton class
  */
-template<typename T>
-class Singleton {
+template <typename T>
+class Singleton
+{
 public:
     static T *getInstance();
 };
 
-template<typename T>
-T *Singleton<T>::getInstance() {
+template <typename T>
+T *Singleton<T>::getInstance()
+{
     static T *instance = new T();
     return instance;
 }
@@ -18,7 +21,10 @@ T *Singleton<T>::getInstance() {
 #define SINGLETON(Class)                        \
 private:                                        \
     friend class Singleton<Class>;              \
-    public:                                     \
-    static Class* getInstance() {               \
+public:                                         \
+    static Class *getInstance()                 \
+    {                                           \
         return Singleton<Class>::getInstance(); \
-}
+    }
+
+#endif // __SINGLETON_H__

@@ -1,12 +1,14 @@
-#pragma once
+#ifndef __INITIALIZRHELPER_H__
+#define __INITIALIZRHELPER_H__
 
 #include <QObject>
 #include <QtQml/qqml.h>
 #include <QDir>
 #include "src/singleton.h"
 
-class InitializrHelper : public QObject {
-Q_OBJECT
+class InitializrHelper : public QObject
+{
+    Q_OBJECT
 private:
     [[maybe_unused]] explicit InitializrHelper(QObject *parent = nullptr);
 
@@ -14,11 +16,11 @@ private:
 
     static void copyFile(const QString &source, const QString &dest);
 
-    template<typename...Args>
+    template <typename... Args>
     void templateToFile(const QString &source, const QString &dest, Args &&...args);
 
 public:
-SINGLETON(InitializrHelper)
+    SINGLETON(InitializrHelper)
 
     ~InitializrHelper() override;
 
@@ -28,3 +30,5 @@ SINGLETON(InitializrHelper)
 
     Q_SIGNAL void success(const QString &path);
 };
+
+#endif // __INITIALIZRHELPER_H__

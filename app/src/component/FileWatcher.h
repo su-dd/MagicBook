@@ -1,13 +1,16 @@
-#pragma once
+#ifndef __FILEWATCHER_H__
+#define __FILEWATCHER_H__
 
 #include <QObject>
 #include <QFileSystemWatcher>
 #include <QtQml/qqml.h>
 #include "src/stdafx.h"
 
-class FileWatcher : public QObject {
-Q_OBJECT
-Q_PROPERTY_AUTO(QString, path);
+class FileWatcher : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY_AUTO(QString, path);
+
 public:
     explicit FileWatcher(QObject *parent = nullptr);
 
@@ -19,3 +22,5 @@ private:
 private:
     QFileSystemWatcher _watcher;
 };
+
+#endif // __FILEWATCHER_H__

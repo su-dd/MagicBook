@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OPENGLITEM_H__
+#define __OPENGLITEM_H__
 
 #include <QtQuick/QQuickItem>
 #include <QOpenGLFunctions>
@@ -6,8 +7,9 @@
 
 class FBORenderer;
 
-class OpenGLItem : public QQuickFramebufferObject, protected QOpenGLFunctions {
-Q_OBJECT
+class OpenGLItem : public QQuickFramebufferObject, protected QOpenGLFunctions
+{
+    Q_OBJECT
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
 public:
     explicit OpenGLItem(QQuickItem *parent = nullptr);
@@ -27,3 +29,5 @@ signals:
 private:
     qreal m_t{};
 };
+
+#endif // __OPENGLITEM_H__
