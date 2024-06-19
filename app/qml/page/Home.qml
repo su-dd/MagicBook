@@ -15,21 +15,12 @@ FluScrollablePage{
     ListModel{
         id: model_header
         ListElement{
-            icon: "qrc:/example/res/image/ic_home_github.png"
+            icon: "qrc:/res/image/ic_home_github.png"
             title: qsTr("FluentUI GitHub")
             desc: qsTr("The latest FluentUI controls and styles for your applications.")
             url: "https://github.com/zhuzichu520/FluentUI"
             clicked: function(model){
                 Qt.openUrlExternally(model.url)
-            }
-        }
-        ListElement{
-            icon: "qrc:/example/res/image/favicon.ico"
-            title: qsTr("FluentUI Initializr")
-            desc: qsTr("FluentUI Initializr is a Tool that helps you create and customize Fluent UI projects with various options.")
-            url: "https://github.com/zhuzichu520/FluentUI"
-            clicked: function(model){
-                fluent_Initializr.showDialog()
             }
         }
     }
@@ -42,7 +33,7 @@ FluScrollablePage{
             anchors.fill: parent
             verticalAlignment: Qt.AlignTop
             sourceSize: Qt.size(960,640)
-            source: "qrc:/example/res/image/bg_home_header.png"
+            source: "qrc:/res/image/bg_home_header.png"
         }
         Rectangle{
             anchors.fill: parent
@@ -52,7 +43,7 @@ FluScrollablePage{
             }
         }
         FluText{
-            text:"FluentUI Gallery"
+            text:"FluentUI Gallery Test"
             font: FluTextStyle.TitleLarge
             anchors{
                 top: parent.top
@@ -253,12 +244,12 @@ FluScrollablePage{
         }
     }
 
-    // FluText{
-    //     text: "Recently added samples"
-    //     font: FluTextStyle.Title
-    //     Layout.topMargin: 20
-    //     Layout.leftMargin: 20
-    // }
+    FluText{
+        text: "Recently added samples"
+        font: FluTextStyle.Title
+        Layout.topMargin: 20
+        Layout.leftMargin: 20
+    }
 
     // GridView{
     //     Layout.fillWidth: true

@@ -1,0 +1,6 @@
+{
+    "name": "uchmviewer",
+    "dependencies": [
+        "libzip"
+    ]
+}

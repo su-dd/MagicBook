@@ -75,6 +75,7 @@ FluWindow {
             onDropped:
                 (event)=>{
                     var url = getUrlByEvent(event)
+                    console.log(url)
                     if(url !== ""){
                         loader.source = url
                         watcher.path = url

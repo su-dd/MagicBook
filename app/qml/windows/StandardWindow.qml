@@ -35,7 +35,7 @@ FluWindow {
         }
     }
 
-    FluText{
+    FluText {
         anchors.centerIn: parent
         text: qsTr("I'm a Standard mode window, and every time I create a new window")
     }

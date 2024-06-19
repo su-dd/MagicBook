@@ -1,6 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickWindow>
+#include <QQmlComponent>
 
 #include "Version.h"
 #include "AppInfo.h"
@@ -12,7 +14,6 @@
 
 #include "src/helper/Log.h"
 #include "src/helper/SettingsHelper.h"
-#include "src/helper/InitializrHelper.h"
 #include "src/helper/TranslateHelper.h"
 #include "src/helper/Network.h"
 #ifdef WIN32
@@ -47,8 +48,15 @@ int main(int argc, char *argv[])
     SettingsHelper::getInstance()->init(argv);
     Log::setup(argv,uri);
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+#endif
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+#endif
 #endif
     QGuiApplication app(argc, argv);
 
@@ -65,17 +73,26 @@ int main(int argc, char *argv[])
     TranslateHelper::getInstance()->init(&engine);
     engine.rootContext()->setContextProperty("AppInfo",AppInfo::getInstance());
     engine.rootContext()->setContextProperty("SettingsHelper",SettingsHelper::getInstance());
-    engine.rootContext()->setContextProperty("InitializrHelper",InitializrHelper::getInstance());
     engine.rootContext()->setContextProperty("TranslateHelper",TranslateHelper::getInstance());
     engine.rootContext()->setContextProperty("Network",Network::getInstance());
 
-    const QUrl url(QStringLiteral("qrc:/qml/App.qml"));
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-        &app, [url](QObject *obj, const QUrl &objUrl) {
-            if (!obj && url == objUrl)
-                QCoreApplication::exit(-1);
-        }, Qt::QueuedConnection);
-    engine.load(url);
+    // const QUrl url(QStringLiteral("qrc:/qml/App.qml"));
+    // QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+    //     &app, [url](QObject *obj, const QUrl &objUrl) {
+    //         if (!obj && url == objUrl)
+    //             QCoreApplication::exit(-1);
+    //     }, Qt::QueuedConnection);
+    // engine.load(url);
+
+
+    QObject::connect(
+        &engine,
+        &QQmlApplicationEngine::objectCreationFailed,
+        &app,
+        []() { QCoreApplication::exit(-1); },
+        Qt::QueuedConnection);
+    engine.loadFromModule("MagicBook", "App");
+
     const int exec = QGuiApplication::exec();
     if (exec == 931) // 重新启动
     {

@@ -3,9 +3,9 @@
 
 #include <QtGlobal>
 
-#define APPLICATION_FULL_VERSION "1.0.0.2"
-#define VERSION_COUNTER 2
-#define COMMIT_HASH "db5a845"
+#define APPLICATION_FULL_VERSION "1.0.0.3"
+#define VERSION_COUNTER 3
+#define COMMIT_HASH "aabc62a"
 #define APPLICATION_VERSION "1.0.0"
 
 #endif  // VERSION_H

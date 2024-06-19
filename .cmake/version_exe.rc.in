@@ -31,4 +31,4 @@ BEGIN
     END
 END
 
-IDI_ICON1 ICON DISCARDABLE "${CMAKE_SOURCE_DIR}/app/favicon.ico"
+IDI_ICON1 ICON DISCARDABLE "${CMAKE_SOURCE_DIR}/app/res/image/favicon.ico"

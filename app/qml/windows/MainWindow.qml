@@ -28,20 +28,12 @@ FluWindow {
         z:7
     }
 
-    FluentInitializrWindow{
-        id:fluent_Initializr
-    }
-
     FluEvent{
         name: "checkUpdate"
         onTriggered: {
             checkUpdate(false)
         }
     }
-
-    // onLazyLoad: {
-    //     tour.open()
-    // }
 
     Component.onCompleted: {
         checkUpdate(true)
@@ -65,7 +57,7 @@ FluWindow {
         }
     }
 
-    FluNavigationView{
+    NavigationView{
         id:nav_view
         width: parent.width
         height: parent.height
@@ -73,7 +65,7 @@ FluWindow {
         // Stack模式，每次切换都会将页面压入栈中，随着栈的页面增多，消耗的内存也越多，内存消耗多就会卡顿，这时候就需要按返回将页面pop掉，释放内存。该模式可以配合FluPage中的launchMode属性，设置页面的启动模式
         // pageMode: FluNavigationViewType.Stack
         // NoStack模式，每次切换都会销毁之前的页面然后创建一个新的页面，只需消耗少量内存
-        pageMode: FluNavigationViewType.NoStack
+        // pageMode: FluNavigationViewType.NoStack
         topPadding:{
             if(window.useSystemAppBar){
                 return 0
@@ -81,19 +73,10 @@ FluWindow {
             return FluTools.isMacos() ? 20 : 0
         }
         displayMode: GlobalModel.displayMode
-        logo: "qrc:/res/image/favicon.ico"
+        logo: GlobalModel.logo
         title:qsTr("MagicBook")
         onLogoClicked:{
             showSuccess(qsTr("Click Time"))
-        }
-        autoSuggestBox:FluAutoSuggestBox{
-            iconSource: FluentIcons.Search
-            items: ItemsOriginal.getSearchData()
-            placeholderText: qsTr("Search")
-            onItemClicked:
-                (data) => {
-                    ItemsOriginal.startPageByItem(data)
-                }
         }
         items: ItemsOriginal
         footerItems:ItemsFooter
@@ -128,7 +111,7 @@ FluWindow {
     SystemTrayIcon {
         id:system_tray
         visible: true
-        icon.source: "qrc:/res/image/favicon.ico"
+        icon.source: GlobalModel.windowIcon
         tooltip: qsTr("MagicBook")
         menu: Menu {
             MenuItem {
@@ -195,9 +178,19 @@ FluWindow {
             var pos = button.mapToItem(target,0,0)
             var mouseX = pos.x
             var mouseY = pos.y
-            var radius = Math.max(distance(mouseX,mouseY,0,0),distance(mouseX,mouseY,target.width,0),distance(mouseX,mouseY,0,target.height),distance(mouseX,mouseY,target.width,target.height))
+            var radius = Math.max(
+                        distance(mouseX,mouseY,0,0),
+                        distance(mouseX,mouseY,target.width,0),
+                        distance(mouseX,mouseY,0,target.height),
+                        distance(mouseX,mouseY,target.width,target.height)
+                        )
             var reveal = loader_reveal.item
-            reveal.start(reveal.width*Screen.devicePixelRatio,reveal.height*Screen.devicePixelRatio,Qt.point(mouseX,mouseY),radius)
+            reveal.start(
+                        reveal.width*Screen.devicePixelRatio,
+                        reveal.height*Screen.devicePixelRatio,
+                        Qt.point(mouseX,mouseY),
+                        radius
+                        )
         }
     }
 
@@ -206,66 +199,6 @@ FluWindow {
             FluTheme.darkMode = FluThemeType.Light
         }else{
             FluTheme.darkMode = FluThemeType.Dark
-        }
-    }
-
-    Shortcut {
-        sequence: "F5"
-        context: Qt.WindowShortcut
-        onActivated: {
-            loader.reload()
-        }
-    }
-
-    Shortcut {
-        sequence: "F6"
-        context: Qt.WindowShortcut
-        onActivated: {
-            tour.open()
-        }
-    }
-
-    FluTour{
-        id: tour
-        finishText: qsTr("Finish")
-        nextText: qsTr("Next")
-        previousText: qsTr("Previous")
-        steps:{
-            var data = []
-            if(!window.useSystemAppBar){
-                data.push({title:qsTr("Dark Mode"),description: qsTr("Here you can switch to night mode."),target:()=>appBar.buttonDark})
-            }
-            // data.push({title:qsTr("Hide Easter eggs"),description: qsTr("Try a few more clicks!!"),target:()=>nav_view.imageLogo})
-            return data
-        }
-    }
-
-    FpsItem{
-        id:fps_item
-    }
-
-    FluText{
-        text: "fps %1".arg(fps_item.fps)
-        opacity: 0.3
-        anchors{
-            bottom: parent.bottom
-            right: parent.right
-            bottomMargin: 5
-            rightMargin: 5
-        }
-    }
-
-    FluContentDialog{
-        property string newVerson
-        property string body
-        id: dialog_update
-        title: qsTr("Upgrade Tips")
-        message:qsTr("MagicBook is currently up to date ")+ newVerson +qsTr(" -- The current app version") +AppInfo.version+qsTr(" \nNow go and download the new version？\n\nUpdated content: \n")+body
-        buttonFlags: FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
-        negativeText: qsTr("Cancel")
-        positiveText: qsTr("OK")
-        onPositiveClicked:{
-            Qt.openUrlExternally("https://github.com/su_dd/MagicBook/releases/latest")
         }
     }
 
@@ -305,7 +238,7 @@ FluWindow {
 
     function checkUpdate(silent) {
         callable.silent = silent
-        Network.get("https://api.github.com/repos/su_dd/MagicBook/releases/latest")
+        Network.get(GlobalModel.releases_latest_api)
         .go(callable)
     }
 }

@@ -33,7 +33,7 @@ FluWindow {
             top: parent.top
             topMargin: 40
         }
-        source: "qrc:/example/res/image/ic_crash.png"
+        source: "qrc:/res/image/ic_crash.png"
     }
 
     FluText{

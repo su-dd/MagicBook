@@ -19,8 +19,8 @@ else()
 endif()
 
 #导入Qt相关依赖包
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Quick)
+qt_standard_project_setup(REQUIRES 6.5)
 
 #添加国际化脚本
 find_program(QT_LUPDATE NAMES lupdate)
@@ -36,17 +36,6 @@ add_custom_target(Script-UpdateTranslations
     SOURCES ${TS_FILE_PATHS}
 )
 
-#遍历所有Cpp文件
-file(GLOB_RECURSE CPP_FILES *.cpp *.h) # file(GLOB_RECURSE <variable> <pattern> [...]) 将符合特定模式的文件列表存储在变量中，包括子目录中的文件。
-foreach (filepath ${CPP_FILES})
-    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" filename ${filepath})
-    list(APPEND SOURCES_FILES ${filename})
-endforeach (filepath)
-
-if (WIN32)
-    list(APPEND SOURCES_FILES "src/app_dmp.h")
-endif ()
-
 #加快qrc编译
 qt_add_big_resources(QRC_RESOURCES app.qrc)
 list(APPEND QRC_RESOURCES app.qrc)
@@ -59,8 +48,17 @@ configure_file(
         ${HEADER_FILE_VERSION_PATH}
 )
 
-#如果是Windows平台，则生成rc文件，还有inno setup脚本文件
+
+#遍历所有Cpp文件
+file(GLOB_RECURSE CPP_FILES *.cpp *.h) # file(GLOB_RECURSE <variable> <pattern> [...]) 将符合特定模式的文件列表存储在变量中，包括子目录中的文件。
+foreach (filepath ${CPP_FILES})
+    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" filename ${filepath})
+    list(APPEND SOURCES_FILES ${filename})
+endforeach (filepath)
+
 if (WIN32)
+    list(APPEND SOURCES_FILES "src/app_dmp.h")
+    #如果是Windows平台，则生成rc文件，还有inno setup脚本文件
     set(MagicBook_VERSION_RC_PATH ${CMAKE_CURRENT_BINARY_DIR}/version_${PROJECT_NAME}.rc)
     configure_file(
             ${CMAKE_SOURCE_DIR}/.cmake/version_exe.rc.in
@@ -73,22 +71,31 @@ if (WIN32)
     list(APPEND SOURCES_FILES ${MagicBook_VERSION_RC_PATH})
 endif ()
 
-
 #添加可执行文件
 set(PROJECT_SOURCES
     ${SOURCES_FILES}
     ${QRC_RESOURCES}
 )
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(${PROJECT_NAME}
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
-else()
-    add_executable(${PROJECT_NAME}
-        ${PROJECT_SOURCES}
-    )
-endif()
+
+qt_add_executable(${PROJECT_NAME}
+    MANUAL_FINALIZATION
+    ${PROJECT_SOURCES}
+)
+
+
+#遍历所有qml文件
+file(GLOB_RECURSE QML_FILES *.qml) # file(GLOB_RECURSE <variable> <pattern> [...]) 将符合特定模式的文件列表存储在变量中，包括子目录中的文件。
+foreach (filepath ${QML_FILES})
+    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" filename ${filepath})
+    list(APPEND FRONT_FILES ${filename})
+endforeach (filepath)
+
+qt_add_qml_module(${PROJECT_NAME}
+    URI ${PROJECT_NAME}
+    VERSION 1.0
+    QML_FILES
+        ${FRONT_FILES}
+)
 
 add_dependencies(${PROJECT_NAME} Script-UpdateTranslations)
 
@@ -99,11 +106,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src/helper
 )
-
-
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.${PROJECT_NAME})
-endif()
 
 #设置属性
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -130,13 +132,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_import_qml_plugins(${PROJECT_NAME})
-    qt_finalize_executable(${PROJECT_NAME})
-endif()
-
+# 保证程序运行能找到资源
+qt_import_qml_plugins(${PROJECT_NAME})
+qt_finalize_executable(${PROJECT_NAME})
 
 #添加部署脚本
 if (CMAKE_BUILD_TYPE MATCHES "Release")
